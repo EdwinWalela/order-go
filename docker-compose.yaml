@@ -2,24 +2,26 @@ version: '3'
 services:
   orders:
     build: ./orders
-    restart: always
     ports:
     - '8080:3000'
     environment:
       - DB_USER=${PG_USER}
       - DB_PASS=${PG_PASSWORD}
       - DB_NAME=${PG_DB}
+      - DB_PORT=${PG_PORT}
+      - PORT=3000
     networks:
       - go-order
   payments:
     build: ./payments
-    restart: always
     ports:
-      - '8080:3000'
+      - '8000:3000'
     environment:
       - DB_USER=${PG_USER}
       - DB_PASS=${PG_PASSWORD}
       - DB_NAME=${PG_DB}
+      - DB_PORT=${PG_PORT}
+      - PORT=3000
     networks:
       - go-order
   pgdb:
@@ -33,5 +35,5 @@ services:
     networks:
       - go-order
 networks:
-  todo:
+  go-order:
     driver: bridge

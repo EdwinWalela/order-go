@@ -1,4 +1,4 @@
-FROM golang:1.15
+FROM golang:1.19
 
 WORKDIR /app
 
@@ -13,4 +13,4 @@ RUN go build -o /orders
 
 EXPOSE 3000
 
-CMD [ "/payments" ]
+CMD [ "/orders" ]
