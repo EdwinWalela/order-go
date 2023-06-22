@@ -32,7 +32,6 @@ func LoadConfig() Config {
 	} else {
 		cfg.Environment = "development"
 	}
-	fmt.Println(cfg)
 	return cfg
 }
 
