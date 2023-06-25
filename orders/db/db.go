@@ -1,23 +1,14 @@
 package db
 
 import (
-	"fmt"
-	"log"
+	"context"
 
+	"cloud.google.com/go/firestore"
 	"github.com/edwinwalela/go-order/orders/config"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"google.golang.org/api/option"
 )
 
-func Up(config config.Config) (*gorm.DB, error) {
-	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		config.Db.Host, config.Db.User, config.Db.Password, config.Db.Name, config.Db.Port,
-	)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to database: %v", err.Error())
-	}
-	log.Println("connection to database successful")
-	return db, nil
+func Up(ctx context.Context, config config.Config) (*firestore.Client, error) {
+	opt := option.WithCredentialsFile("./firestore-sa.json")
+	return firestore.NewClient(ctx, config.Db.ProjectId, opt)
 }

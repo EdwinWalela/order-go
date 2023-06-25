@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	c "github.com/edwinwalela/go-order/orders/config"
@@ -12,6 +13,7 @@ import (
 func main() {
 	r := gin.Default()
 	config := c.LoadConfig()
+	ctx := context.Background()
 
 	handler := handlers.Handler{
 		Router: r,
@@ -19,7 +21,7 @@ func main() {
 
 	handler.Register()
 
-	conn, err := db.Up(config)
+	conn, err := db.Up(ctx, config)
 
 	if err != nil {
 		panic(err)
