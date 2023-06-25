@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	c "github.com/edwinwalela/go-order/orders/config"
+	"github.com/edwinwalela/go-order/orders/db"
 	"github.com/edwinwalela/go-order/orders/handlers"
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +18,14 @@ func main() {
 	}
 
 	handler.Register()
+
+	conn, err := db.Up(config)
+
+	if err != nil {
+		panic(err)
+	}
+
+	_ = conn
 
 	r.Run(fmt.Sprintf(":%s", config.Port))
 }

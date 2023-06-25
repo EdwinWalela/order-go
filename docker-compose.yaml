@@ -1,7 +1,8 @@
 version: '3'
 services:
   orders:
-    build: ./orders
+    image: cosmtrek/air
+    working_dir: /orders
     ports:
     - '8080:3000'
     environment:
@@ -9,7 +10,10 @@ services:
       - DB_PASS=${PG_PASSWORD}
       - DB_NAME=${PG_DB}
       - DB_PORT=${PG_PORT}
+      - DB_HOST=${PG_HOST}
       - PORT=3000
+    volumes:
+      - ./orders/:/orders
     networks:
       - go-order
   payments:
@@ -28,6 +32,8 @@ services:
     image: postgres:14
     volumes:
       - /pgdata/go-orders:/var/lib/postgresql/data/
+    ports:
+      - '5432:5432'
     environment:
       - POSTGRES_USER=${PG_USER}
       - POSTGRES_PASSWORD=${PG_PASSWORD}
