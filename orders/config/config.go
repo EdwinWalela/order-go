@@ -12,21 +12,13 @@ type Config struct {
 }
 
 type db struct {
-	Name     string
-	Port     string
-	User     string
-	Password string
+	ProjectId string
 }
 
 func LoadConfig() Config {
 	cfg := Config{}
-
-	mustMapEnv(&cfg.Db.Name, "DB_NAME")
-	mustMapEnv(&cfg.Db.Password, "DB_PASS")
-	mustMapEnv(&cfg.Db.User, "DB_USER")
-	mustMapEnv(&cfg.Db.Port, "DB_PORT")
+	mustMapEnv(&cfg.Db.ProjectId, "FIRESTORE_PROJ_ID")
 	mustMapEnv(&cfg.Port, "PORT")
-
 	if os.Getenv("ENV") != "" {
 		cfg.Environment = os.Getenv("ENV")
 	} else {
