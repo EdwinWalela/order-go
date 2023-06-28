@@ -6,7 +6,7 @@ import (
 
 	c "github.com/edwinwalela/go-order/orders/config"
 	"github.com/edwinwalela/go-order/orders/db"
-	"github.com/edwinwalela/go-order/orders/handlers"
+	"github.com/edwinwalela/go-order/orders/service/customer"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,19 +15,17 @@ func main() {
 	config := c.LoadConfig()
 	ctx := context.Background()
 
-	handler := handlers.Handler{
-		Router: r,
-	}
-
-	handler.Register()
-
 	conn, err := db.Up(ctx, config)
 
 	if err != nil {
 		panic(err)
 	}
 
-	_ = conn
+	customers := customer.Customer{
+		Router: r,
+		DBConn: conn,
+	}
+	customers.Register()
 
 	r.Run(fmt.Sprintf(":%s", config.Port))
 }
