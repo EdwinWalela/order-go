@@ -8,6 +8,10 @@ import (
 	"google.golang.org/api/iterator"
 )
 
+const (
+	collection = "customers"
+)
+
 type Repository struct {
 	DBConn  *firestore.Client
 	context context.Context
@@ -23,7 +27,7 @@ func (r *Repository) GetById(uuid string) (Model, error) {
 
 func (r *Repository) getDocument(uuid string) (Model, error) {
 	model := Model{}
-	iter := r.DBConn.Collection("customers").Where("Uuid", "==", uuid).Documents(r.context)
+	iter := r.DBConn.Collection(collection).Where("Uuid", "==", uuid).Documents(r.context)
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
@@ -43,7 +47,7 @@ func (r *Repository) getDocument(uuid string) (Model, error) {
 }
 
 func (r *Repository) GetAll() ([]Model, error) {
-	iter := r.DBConn.Collection("customers").Documents(r.context)
+	iter := r.DBConn.Collection(collection).Documents(r.context)
 	customers := []Model{}
 	for {
 		customer := Model{}
@@ -63,7 +67,7 @@ func (r *Repository) GetAll() ([]Model, error) {
 }
 
 func (r *Repository) Delete(uuid string) error {
-	query := r.DBConn.Collection("customers").Where("Uuid", "==", uuid)
+	query := r.DBConn.Collection(collection).Where("Uuid", "==", uuid)
 	docs, err := query.Documents(r.context).GetAll()
 	if err != nil {
 		return fmt.Errorf("failed to get all customers: %v", err.Error())
@@ -78,7 +82,7 @@ func (r *Repository) Delete(uuid string) error {
 }
 
 func (r *Repository) Create(model Model) (string, error) {
-	res, _, err := r.DBConn.Collection("customers").Add(r.context, model)
+	res, _, err := r.DBConn.Collection(collection).Add(r.context, model)
 	model.Uuid = res.ID
 	if err != nil {
 		return "", fmt.Errorf("failed to save customer: %v", err.Error())
