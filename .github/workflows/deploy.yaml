@@ -18,7 +18,7 @@ jobs:
         with:
           gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} 
           registry: gcr.io
-          project_id: pro-chesta
+          project_id: ics-jamii-1632986730022
           image_name: go-order-api
           image_tag: go-order-api-${{ github.sha }}, ${{ github.sha }}
           dockerfile: ./orders/Dockerfile
