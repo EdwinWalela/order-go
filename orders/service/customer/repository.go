@@ -14,6 +14,14 @@ type Repository struct {
 }
 
 func (r *Repository) GetById(uuid string) (Model, error) {
+	model, err := r.getDocument(uuid)
+	if err != nil {
+		return model, err
+	}
+	return model, nil
+}
+
+func (r *Repository) getDocument(uuid string) (Model, error) {
 	model := Model{}
 	iter := r.DBConn.Collection("customers").Where("Uuid", "==", uuid).Documents(r.context)
 	for {
@@ -54,17 +62,17 @@ func (r *Repository) GetAll() ([]Model, error) {
 	return customers, nil
 }
 
-func (r *Repository) Update() {
-
-}
-
-func (r *Repository) Delete() {
-
+func (r *Repository) Delete(id string) error {
+	_, err := r.DBConn.Collection("customers").Doc(id).Delete(r.context)
+	if err != nil {
+		return fmt.Errorf("failed to delete customer (%s): %v", err.Error())
+	}
+	return nil
 }
 
 func (r *Repository) Create(model Model) (string, error) {
-	_, _, err := r.DBConn.Collection("customers").Add(r.context, model)
-
+	res, _, err := r.DBConn.Collection("customers").Add(r.context, model)
+	model.Uuid = res.ID
 	if err != nil {
 		return "", fmt.Errorf("failed to save customer: %v", err.Error())
 	}

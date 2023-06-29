@@ -44,15 +44,17 @@ func (h *Handler) GetAll(c *gin.Context) {
 	})
 }
 
-func (h *Handler) Update(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "OK",
-	})
-}
-
 func (h *Handler) Delete(c *gin.Context) {
+	id := c.Param("id")
+	if err := h.service.Delete(id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": "OK",
+		"message": "customer deleted",
+		"id":      id,
 	})
 }
 

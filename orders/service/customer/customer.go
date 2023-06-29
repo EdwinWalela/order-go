@@ -21,7 +21,6 @@ func (c *Customer) Register() {
 	v1 := c.Router.Group("/api/v1")
 	v1.GET("/customers/:id", c.Handler.GetById)
 	v1.GET("/customers", c.Handler.GetAll)
-	v1.PATCH("/customers/:id", c.Handler.Update)
 	v1.DELETE("/customers/:id", c.Handler.Delete)
 	v1.POST("/customers", c.Handler.Create)
 }
