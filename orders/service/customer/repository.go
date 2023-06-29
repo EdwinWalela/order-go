@@ -62,10 +62,17 @@ func (r *Repository) GetAll() ([]Model, error) {
 	return customers, nil
 }
 
-func (r *Repository) Delete(id string) error {
-	_, err := r.DBConn.Collection("customers").Doc(id).Delete(r.context)
+func (r *Repository) Delete(uuid string) error {
+	query := r.DBConn.Collection("customers").Where("Uuid", "==", uuid)
+	docs, err := query.Documents(r.context).GetAll()
 	if err != nil {
-		return fmt.Errorf("failed to delete customer (%s): %v", err.Error())
+		return fmt.Errorf("failed to get all customers: %v", err.Error())
+	}
+	for _, doc := range docs {
+		_, err := doc.Ref.Delete(r.context)
+		if err != nil {
+			return fmt.Errorf("failed to delete customer (%s): %v", uuid, err.Error())
+		}
 	}
 	return nil
 }
