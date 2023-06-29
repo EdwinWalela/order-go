@@ -1,2 +1,2 @@
 test:
-	go test -v ./orders/.. && go test -v ./payments/...
+	cd orders && go test
