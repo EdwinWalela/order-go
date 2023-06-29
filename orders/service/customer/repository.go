@@ -2,9 +2,7 @@ package customer
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"log"
 
 	"cloud.google.com/go/firestore"
 	"google.golang.org/api/iterator"
@@ -36,18 +34,24 @@ func (r *Repository) GetById(uuid string) (Model, error) {
 	return model, nil
 }
 
-func (r *Repository) GetAll() {
-	customers, err := r.DBConn.Doc("Demo/Test").Get(context.Background())
-	if err != nil {
-		log.Println(err)
-		return
+func (r *Repository) GetAll() ([]Model, error) {
+	iter := r.DBConn.Collection("customers").Documents(r.context)
+	customers := []Model{}
+	for {
+		customer := Model{}
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return customers, err
+		}
+		if err := doc.DataTo(&customer); err != nil {
+			return customers, fmt.Errorf("failed to map document to model: %v", err.Error())
+		}
+		customers = append(customers, customer)
 	}
-	json, err := json.MarshalIndent(customers.Data(), "", "  ")
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	fmt.Println(string(json))
+	return customers, nil
 }
 
 func (r *Repository) Update() {

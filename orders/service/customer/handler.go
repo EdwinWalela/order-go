@@ -32,9 +32,15 @@ func (h *Handler) GetById(c *gin.Context) {
 }
 
 func (h *Handler) GetAll(c *gin.Context) {
-	h.service.GetAll()
+	customers, err := h.service.GetAll()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": "OK",
+		"customers": customers,
 	})
 }
 

@@ -14,8 +14,8 @@ func (s *Service) GetById(uuid string) (Model, error) {
 	return s.repository.GetById(uuid)
 }
 
-func (s *Service) GetAll() {
-	s.repository.GetAll()
+func (s *Service) GetAll() ([]Model, error) {
+	return s.repository.GetAll()
 }
 
 func (s *Service) Update() {
