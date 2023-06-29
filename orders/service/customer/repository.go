@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"cloud.google.com/go/firestore"
+	"google.golang.org/api/iterator"
 )
 
 type Repository struct {
@@ -16,20 +17,21 @@ type Repository struct {
 
 func (r *Repository) GetById(uuid string) (Model, error) {
 	model := Model{}
-	doc, err := r.DBConn.Doc("go-order/customers").Get(context.Background())
-
-	if err != nil {
-		return model, fmt.Errorf("failed to retrieve customer (%s): %v", uuid, err.Error())
+	iter := r.DBConn.Collection("customers").Where("Uuid", "==", uuid).Documents(r.context)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return model, err
+		}
+		if err := doc.DataTo(&model); err != nil {
+			return model, fmt.Errorf("failed to map document to model: %v", err.Error())
+		}
 	}
-	docJson, err := json.MarshalIndent(doc.Data(), "", "  ")
-	if err != nil {
-		return model, fmt.Errorf("failed to marshal document to JSON")
-	}
-
-	err = json.Unmarshal(docJson, &model)
-
-	if err != nil {
-		return model, fmt.Errorf("failed to unmarshal customer JSON to model")
+	if model.Uuid == "" && model.Name == "" && model.Address == "" && model.Contact == "" {
+		return model, fmt.Errorf("not found")
 	}
 	return model, nil
 }

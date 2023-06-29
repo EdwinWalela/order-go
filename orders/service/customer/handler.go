@@ -17,7 +17,7 @@ func (h *Handler) GetById(c *gin.Context) {
 	id := c.Param("id")
 	customer, err := h.service.GetById(id)
 	if err != nil {
-		if strings.Contains(err.Error(), "NotFound") {
+		if strings.Contains(err.Error(), "not found") {
 			c.JSON(http.StatusNotFound, gin.H{})
 			return
 		}
