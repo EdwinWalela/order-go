@@ -1,5 +1,11 @@
 package customer
 
+import (
+	"fmt"
+
+	"github.com/google/uuid"
+)
+
 type Service struct {
 	repository Repository
 }
@@ -20,6 +26,11 @@ func (s *Service) Delete() {
 	s.repository.Delete()
 }
 
-func (s *Service) Create() {
-	s.repository.Create()
+func (s *Service) Create(model Model) (string, error) {
+	//@TODO: Validate if uuid already exists in our database
+	model.Uuid = uuid.New().String()
+	if model.Address == "" || model.Contact == "" || model.Name == "" {
+		return "", fmt.Errorf("required field(s) missing")
+	}
+	return s.repository.Create(model)
 }

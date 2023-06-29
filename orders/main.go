@@ -22,8 +22,9 @@ func main() {
 	}
 
 	customers := customer.Customer{
-		Router: r,
-		DBConn: conn,
+		Router:  r,
+		DBConn:  conn,
+		Context: ctx,
 	}
 	customers.Register()
 

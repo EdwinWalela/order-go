@@ -1,6 +1,8 @@
 package customer
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"strings"
 
@@ -49,7 +51,33 @@ func (h *Handler) Delete(c *gin.Context) {
 }
 
 func (h *Handler) Create(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "OK",
+	jsonBody, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	model := Model{}
+	err = json.Unmarshal(jsonBody, &model)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	uuid, err := h.service.Create(model)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "customer created",
+		"uuid":    uuid,
 	})
 }
