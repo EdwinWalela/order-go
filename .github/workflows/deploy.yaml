@@ -23,4 +23,3 @@ jobs:
           image_tag: go-order-api-${{ github.sha }}, ${{ github.sha }}
           dockerfile: ./orders/Dockerfile
           context: ./orders
-          target: build
