@@ -82,8 +82,7 @@ func (r *Repository) Delete(uuid string) error {
 }
 
 func (r *Repository) Create(model Model) (string, error) {
-	res, _, err := r.DBConn.Collection(collection).Add(r.context, model)
-	model.Uuid = res.ID
+	_, _, err := r.DBConn.Collection(collection).Add(r.context, model)
 	if err != nil {
 		return "", fmt.Errorf("failed to save customer: %v", err.Error())
 	}
