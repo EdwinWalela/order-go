@@ -1,6 +1,6 @@
 resource "google_cloud_run_service" "api_service" {
   name     = "go-orders"
-  location = ""
+  location = "us-west1"
 
   template {
     spec {
