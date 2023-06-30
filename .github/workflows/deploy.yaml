@@ -1,0 +1,25 @@
+name: Deploy
+on: 
+  push:
+    branches: []
+jobs:
+  build-and-push-to-gcr:
+    name: Build & Push Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: '${{ secrets.B64_GCLOUD_SERVICE_ACCOUNT_JSON }}'
+      - name: Building and pushing the image
+        uses: RafikFarhad/push-to-gcr-github-action@v5-beta
+        with:
+          gcloud_service_key: ${{ secrets.JSON_GCLOUD_SERVICE_ACCOUNT_JSON }} 
+          registry: gcr.io
+          project_id: ics-jamii-1632986730022
+          image_name: go-order-api
+          image_tag: go-order-api-${{ github.sha }}, ${{ github.sha }}
+          dockerfile: ./orders/Dockerfile
+          context: ./orders

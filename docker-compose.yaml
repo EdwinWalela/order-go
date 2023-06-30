@@ -6,11 +6,6 @@ services:
     ports:
     - '8080:3000'
     environment:
-      - DB_USER=${PG_USER}
-      - DB_PASS=${PG_PASSWORD}
-      - DB_NAME=${PG_DB}
-      - DB_PORT=${PG_PORT}
-      - DB_HOST=${PG_HOST}
       - FIRESTORE_PROJ_ID=${FIRESTORE_PROJ_ID}
       - PORT=3000
     volumes:
